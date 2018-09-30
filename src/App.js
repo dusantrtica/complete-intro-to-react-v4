@@ -7,6 +7,17 @@ import Details from "./Details";
 import SearchParams from "./SearchParams";
 import { Provider } from "./SearchContext";
 
+/*
+API Key
+3ad2d5a5c96a4a855b5d378af44c97ce
+
+API Secret
+2a55f1033a8feae176772f0920e9d56b
+
+API Status
+Active
+*/
+
 const petfinder = pf({
   key: process.env.API_KEY,
   secret: process.env.API_SECRET
