@@ -1,12 +1,20 @@
-import React from "react";
-import pf from "petfinder-client";
-import { navigate } from "@reach/router";
-import Carousel from "./Carousel";
-import Modal from "./Modal";
+import React from 'react';
+import pf from 'petfinder-client';
+import Loadable from 'react-loadable';
+import { navigate } from '@reach/router';
+import Carousel from './Carousel';
+import Modal from './Modal';
 
 const petfinder = pf({
   key: process.env.API_KEY,
-  secret: process.env.API_SECRET
+  secret: process.env.API_SECRET,
+});
+
+const LoadableContent = Loadable({
+  loader: () => import('./AdoptModalContent'),
+  loading() {
+    return <h1>Loading...</h1>;
+  },
 });
 
 class Details extends React.Component {
@@ -14,13 +22,13 @@ class Details extends React.Component {
   componentDidMount() {
     petfinder.pet
       .get({
-        output: "full",
-        id: this.props.id
+        output: 'full',
+        id: this.props.id,
       })
       .then(data => {
         let breed;
         if (Array.isArray(data.petfinder.pet.breeds.breed)) {
-          breed = data.petfinder.pet.breeds.breed.join(", ");
+          breed = data.petfinder.pet.breeds.breed.join(', ');
         } else {
           breed = data.petfinder.pet.breeds.breed;
         }
@@ -33,11 +41,11 @@ class Details extends React.Component {
           description: data.petfinder.pet.description,
           media: data.petfinder.pet.media,
           breed,
-          loading: false
+          loading: false,
         });
       })
       .catch(() => {
-        navigate("/");
+        navigate('/');
       });
   }
   toggleModal = () => this.setState({ showModal: !this.state.showModal });
@@ -53,7 +61,7 @@ class Details extends React.Component {
       location,
       description,
       name,
-      showModal
+      showModal,
     } = this.state;
 
     return (
@@ -66,11 +74,7 @@ class Details extends React.Component {
           <p>{description}</p>
           {showModal ? (
             <Modal>
-              <h1>Would you like to adopt {name}?</h1>
-              <div className="buttons">
-                <button onClick={this.toggleModal}>Yes</button>
-                <button onClick={this.toggleModal}>No</button>
-              </div>
+              <LoadableContent toggleModal={this.toggleModal} name={name} />
             </Modal>
           ) : null}
         </div>
